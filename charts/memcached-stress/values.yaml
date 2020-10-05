@@ -1,0 +1,9 @@
+image: ADD_IMAGE_TAG_HERE
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "800Mi"
+  limits:
+    memory: "1500Mi"
+    cpu: "1"

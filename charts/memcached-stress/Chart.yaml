@@ -1,0 +1,7 @@
+apiVersion: v1
+description: Memcached stress test.
+name: memcached-stress
+maintainers:
+- name: Ferran Llamas
+  email: llamas.arroniz@gmail.com
+version: 1

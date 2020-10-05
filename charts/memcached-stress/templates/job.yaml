@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "memcached-stress"
+  namespace: "memcached-stress"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install,post-upgrade,post-rollback
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    metadata:
+      name: "memcached-stress"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: stress-test
+        image: "{{ .Values.image }}"
+        command: ["guillotina", "-c", "config.json", "memcached-stress"]
+        resources:
+          {{ toYaml .Values.resources | nindent 10 }}
