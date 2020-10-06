@@ -1,11 +1,5 @@
 {
     "applications": [
         "stress"
-    ],
-    "memcached": {
-        "hosts": [
-            "memcached-test-a01.intra.onna.internal:11211",
-            "memcached-test-b01.intra.onna.internal:11211"
-        ]
-    }
+    ]
 }
