@@ -7,3 +7,10 @@ resources:
   limits:
     memory: "1500Mi"
     cpu: "1"
+
+# Experiment config
+request_rate: 20
+experiment_minutes: 60
+
+# Memcached config
+# memcached_hosts: host1:11211, host2:11211
