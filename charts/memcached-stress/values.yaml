@@ -15,7 +15,7 @@ resources:
 
 ## Note: tune replicas and request_rate to have traffic streams from
 ## different jobs/memcached client connections
-replicas: 1
+replicas: 2
 request_rate: 20
 experiment_minutes: 60
 
