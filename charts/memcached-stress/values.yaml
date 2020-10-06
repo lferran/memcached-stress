@@ -1,5 +1,8 @@
 image: ADD_IMAGE_TAG_HERE
 
+name: "memcached-stress"
+namespace: "memcached-stress"
+
 resources:
   requests:
     cpu: "100m"

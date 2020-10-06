@@ -1,8 +1,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "memcached-stress"
-  namespace: "memcached-stress"
+  name: "{{ .Values.name }}"
+  namespace: "{{ .Values.namespace }}"
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
@@ -13,7 +13,7 @@ spec:
   replicas: {{ .Values.replicas }}
   template:
     metadata:
-      name: "memcached-stress"
+      name: "{{ .Values.name }}"
     spec:
       restartPolicy: Never
       containers:
