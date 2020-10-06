@@ -96,9 +96,13 @@ class MemcachedStress:
                 logger.info(f"Finished phase {i}")
 
     async def run(self):
+        logger.info(
+            f"Starting experiment: up to {self.request_rate} ops/second rate for {self.duration} minutes"
+        )
         await self.initialize()
         try:
             await self.run_traffic()
         except KeyboardInterrupt:
             logger.info("Halting experiment")
         await self.finalize()
+        logger.info(f"Finished experiment")

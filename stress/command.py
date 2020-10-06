@@ -2,12 +2,19 @@ import asyncio
 import logging
 from datetime import datetime
 
+import prometheus_client
+from aiohttp import web
 from guillotina import glogging
 from guillotina.commands import Command
 
 from .memcached import MemcachedStress
 
 logger = glogging.getLogger("stress")
+
+
+async def prometheus_view(request):
+    output = prometheus_client.exposition.generate_latest()
+    return web.Response(text=output.decode("utf8"))
 
 
 class StressTestCommand(Command):
@@ -33,15 +40,13 @@ class StressTestCommand(Command):
         return parser
 
     def run(self, arguments, settings, app):
-        rate = arguments.rate
-        duration = arguments.time
-        logger.info(
-            f"Starting experiment: up to {rate} ops/second rate for {duration} minutes"
-        )
         if arguments.debug:
             logger._logger.setLevel(logging.DEBUG)
 
         memcached = MemcachedStress(request_rate=rate, duration=duration)
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(memcached.run())
-        logger.info(f"Finished experiment")
+        loop = self.get_loop()
+        asyncio.ensure_future(memcached.run(), loop=loop)
+
+        app = web.Application()
+        app.router.add_get("/metrics", prometheus_view)
+        web.run_app(app, port=8080, host="0.0.0.0")

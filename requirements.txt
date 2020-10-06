@@ -1,3 +1,4 @@
+aiohttp==3.6.2
 guillotina==5.3.55
 emcache==0.3.0b0
 pdbpp==0.10.2

@@ -1,7 +1,7 @@
-image: ADD_IMAGE_TAG_HERE
+image: "gcr.io/graceful-earth-112011/memcached-stress:latest"
 
 name: "memcached-stress"
-namespace: "memcached-stress"
+namespace: "default"
 
 resources:
   requests:
@@ -20,4 +20,4 @@ request_rate: 20
 experiment_minutes: 60
 
 # Memcached config ############
-memcached_hosts: localhost:11211
+memcached_hosts: memcached-test-a01.intra.onna.internal:11211, memcached-test-b01.intra.onna.internal:11211

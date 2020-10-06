@@ -3,22 +3,30 @@ kind: Job
 metadata:
   name: "{{ .Values.name }}"
   namespace: "{{ .Values.namespace }}"
-  annotations:
-    # This is what defines this resource as a hook. Without this line, the
-    # job is considered part of the release.
-    "helm.sh/hook": post-install,post-upgrade,post-rollback
-    "helm.sh/hook-weight": "-5"
-    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+  labels:
+    app: "{{ .Values.name }}"
+    role: stress
 spec:
-  replicas: {{ .Values.replicas }}
+  parallelism: 2
+  completions: 2
   template:
     metadata:
-      name: "{{ .Values.name }}"
+      annotations:
+        prometheus.io/scrape: "true"
+      labels:
+        app: "{{ .Values.name }}"
+        role: stress
     spec:
-      restartPolicy: Never
       containers:
       - name: stress-test
         image: "{{ .Values.image }}"
+        ports:
+        - containerPort: {{ .Values.internalPort }}
+          name: metrics-stress
+          protocol: TCP
         command: ["guillotina", "-c", "config.json", "stress", "--debug", "--rate", "{{ .Values.request_rate }}", "--time", "{{ .Values.experiment_minutes}}"]
-        resources:
-          {{ toYaml .Values.resources | nindent 10 }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.name }}-config
+      restartPolicy: Never
+  backoffLimit: 4
