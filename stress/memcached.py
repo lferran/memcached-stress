@@ -35,12 +35,6 @@ class MemcachedStress:
             weights=[op_probs["get"], op_probs["set"], op_probs["delete"]],
         )[0]
 
-    def random_key(self, key_length=50):
-        key = "".join(
-            random.choices(string.ascii_lowercase + string.digits, k=key_length)
-        )
-        return f"stresstest-{key}"
-
     def get_key(self):
         return random.choice(self._keys)
 
@@ -77,7 +71,7 @@ class MemcachedStress:
             start = time.time()
             await self.execute_n_ops(n=n_requests)
             duration = time.time() - start
-            await asyncio.sleep(1 - duration)
+            await asyncio.sleep(max(0, 1 - duration))
 
     async def initialize(self):
         # Initialize driver
