@@ -21,7 +21,7 @@ spec:
       - name: stress-test
         image: "{{ .Values.image }}"
         ports:
-        - containerPort: {{ .Values.internalPort }}
+        - containerPort: 8080
           name: metrics-stress
           protocol: TCP
         command: ["guillotina", "-c", "config.json", "stress", "--debug", "--rate", "{{ .Values.request_rate }}", "--time", "{{ .Values.experiment_minutes}}"]
