@@ -2,11 +2,18 @@
 
 Guillotina memcached driver stress-test k8s job.
 
-  - Defines a k8s job that when deployed, will run a custom guillotina command.
-  - Command generates traffic against a configured set of memcached instances.
+  - Defines a k8s job that when deployed, will execute a custom
+    guillotina command to start the stress test.
+
+  - The command generates random memcached traffic against a
+    configured set of memcached instances.
 
 The test runs for 1 hour, where traffic is gradually increased (25,
 50, 70 and 100%, correspondingly after a few minutes each).
+
+Experiment is ran over a deterministic set of keys, to be able to test
+hits and missess too. Each memcached operation is either get, set or
+delete, each having a 0.5, 0.3 and 0.2 probability, correspondingly.
 
 ## Docker
 

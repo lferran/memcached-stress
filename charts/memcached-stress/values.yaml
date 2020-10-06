@@ -8,9 +8,13 @@ resources:
     memory: "1500Mi"
     cpu: "1"
 
-# Experiment config
+# Experiment config ###########
+
+## Note: tune replicas and request_rate to have traffic streams from
+## different jobs/memcached client connections
+replicas: 1
 request_rate: 20
 experiment_minutes: 60
 
-# Memcached config
+# Memcached config ############
 memcached_hosts: localhost:11211

@@ -10,6 +10,7 @@ metadata:
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
 spec:
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       name: "memcached-stress"
