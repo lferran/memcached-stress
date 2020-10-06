@@ -13,7 +13,7 @@ logger = glogging.getLogger("stress")
 class StressTestCommand(Command):
     """
     Usage:
-        g -c config.json --rate 50
+        g -c config.json stress --rate 50 --time 60
 
     """
 
@@ -23,19 +23,29 @@ class StressTestCommand(Command):
         parser.add_argument(
             "-r", "--rate", help="Memcached op rate in ops/second", type=int, default=20
         )
+        parser.add_argument(
+            "-t",
+            "--time",
+            help="Total experiment time (in minutes)",
+            type=int,
+            default=60,
+        )
         return parser
 
     def run(self, arguments, settings, app):
 
         rate = arguments.rate
+        duration = arguments.time
         start = datetime.utcnow()
 
-        logger.info(f"Starting at {start} with a {rate} ops/second rate")
+        logger.info(
+            f"Starting at {start} with a {rate} ops/second rate for {duration} minutes"
+        )
 
         if arguments.debug:
             logger._logger.setLevel(logging.DEBUG)
 
-        memcached = MemcachedStress(rate)
+        memcached = MemcachedStress(request_rate=rate, duration=duration)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(memcached.run())
 

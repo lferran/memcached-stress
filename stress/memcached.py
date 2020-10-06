@@ -10,8 +10,9 @@ logger = glogging.getLogger("stress")
 
 
 class MemcachedStress:
-    def __init__(self, request_rate):
+    def __init__(self, request_rate=20, duration=60):
         self.request_rate = request_rate
+        self.duration = duration  # minutes
         self.driver = None
         self._keys = self._setup_keys()
 
@@ -47,8 +48,13 @@ class MemcachedStress:
         return ("D" * self.get_value_size()).encode()
 
     def iter_traffic_stages(self):
-        for minutes, traffic_ratio in [(5, 0.25), (10, 0.5), (20, 0.75), (25, 1)]:
-            yield minutes, traffic_ratio
+        for duration_ratio, traffic_ratio in [
+            (0.083, 0.25),
+            (0.167, 0.5),
+            (0.33, 0.75),
+            (0.4167, 1),
+        ]:
+            yield duration_ratio, traffic_ratio
 
     async def memcached_op(self):
         op = self.get_op()
@@ -81,11 +87,13 @@ class MemcachedStress:
         await self.driver.finalize()
 
     async def run_traffic(self):
-        for i, (minutes, traffic_ratio) in enumerate(self.iter_traffic_stages()):
+        for i, (duration_ratio, traffic_ratio) in enumerate(self.iter_traffic_stages()):
+            minutes = duration_ratio * self.duration
             percent = int(traffic_ratio * 100)
+            reqs_sec = self.request_rate * traffic_ratio
             try:
                 logger.info(
-                    f"Starting phase {i} at {percent}% of traffic during {minutes} minutes"
+                    f"Starting phase {i} at {percent}% of traffic ({reqs_sec} reqs/sec) during {minutes:.1f} minutes"
                 )
                 await asyncio.wait_for(
                     self.generate_traffic(traffic_ratio), timeout=minutes * 60
