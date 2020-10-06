@@ -1,7 +1,13 @@
-from guillotina.commands import Command
-from .memcached import MemcachedStress
 import asyncio
+import logging
 from datetime import datetime
+
+from guillotina import glogging
+from guillotina.commands import Command
+
+from .memcached import MemcachedStress
+
+logger = glogging.getLogger("stress")
 
 
 class StressTestCommand(Command):
@@ -23,11 +29,15 @@ class StressTestCommand(Command):
 
         rate = arguments.rate
         start = datetime.utcnow()
-        print(f"Starting at {start} with a {rate} ops/second rate")
+
+        logger.info(f"Starting at {start} with a {rate} ops/second rate")
+
+        if arguments.debug:
+            logger._logger.setLevel(logging.DEBUG)
 
         memcached = MemcachedStress(rate)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(memcached.run())
 
         end = datetime.utcnow()
-        print(f"Finished at {end}")
+        logger.info(f"Finished at {end}")

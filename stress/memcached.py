@@ -1,11 +1,12 @@
-from guillotina.contrib import memcached
-import random
 import asyncio
-import time
-import logging
+import random
 import string
+import time
 
-logger = logging.getLogger("stress")
+from guillotina import glogging
+from guillotina.contrib import memcached
+
+logger = glogging.getLogger("stress")
 
 
 class MemcachedStress:
@@ -66,7 +67,7 @@ class MemcachedStress:
     async def generate_traffic(self, ratio=1):
         while True:
             n_requests = int(self.request_rate * ratio)
-            print(f"Executing {n_requests} requests...")
+            logger.debug(f"Executing {n_requests} requests...")
             start = time.time()
             await self.execute_n_ops(n=n_requests)
             duration = time.time() - start
@@ -83,14 +84,14 @@ class MemcachedStress:
         for i, (minutes, traffic_ratio) in enumerate(self.iter_traffic_stages()):
             percent = int(traffic_ratio * 100)
             try:
-                print(
+                logger.info(
                     f"Starting phase {i} at {percent}% of traffic during {minutes} minutes"
                 )
                 await asyncio.wait_for(
                     self.generate_traffic(traffic_ratio), timeout=minutes * 60
                 )
             except asyncio.TimeoutError:
-                print(f"Finished phase {i}")
+                logger.info(f"Finished phase {i}")
 
     async def run(self):
         await self.initialize()

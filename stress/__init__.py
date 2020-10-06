@@ -27,6 +27,19 @@ app_settings = {
         "purge_unused_connections_after": None,
         "purge_unhealthy_nodes": True,
     },
+    "logging": {
+        "version": 1,
+        "formatters": {
+            "default": {
+                "format": "%(asctime)s %(levelname)-8s %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            }
+        },
+        "handlers": {
+            "default": {"class": "logging.StreamHandler", "formatter": "default"}
+        },
+        "loggers": {"stress": {"level": "INFO", "handlers": ["default"]}},
+    },
 }
 
 
