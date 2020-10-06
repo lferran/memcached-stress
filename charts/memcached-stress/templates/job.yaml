@@ -18,6 +18,6 @@ spec:
       containers:
       - name: stress-test
         image: "{{ .Values.image }}"
-        command: ["guillotina", "-c", "config.json", "stress", "--debug", "-r", "{{ .Values.request_rate }}", "--time=" + "{{ .Values.experiment_minutes}}"]
+        command: ["guillotina", "-c", "config.json", "stress", "--debug", "--rate", "{{ .Values.request_rate }}", "--time", "{{ .Values.experiment_minutes}}"]
         resources:
           {{ toYaml .Values.resources | nindent 10 }}
