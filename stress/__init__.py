@@ -9,7 +9,7 @@ def get_hosts():
         if "," in HOSTS:
             hosts = [h.strip() for h in HOSTS.split(",")]
         else:
-            hosts = HOSTS
+            hosts = [HOSTS]
         return hosts
     except KeyError:
         raise Exception(

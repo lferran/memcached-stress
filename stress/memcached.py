@@ -103,5 +103,8 @@ class MemcachedStress:
 
     async def run(self):
         await self.initialize()
-        await self.run_traffic()
+        try:
+            await self.run_traffic()
+        except KeyboardInterrupt:
+            logger.info("Halting experiment")
         await self.finalize()

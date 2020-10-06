@@ -13,4 +13,4 @@ request_rate: 20
 experiment_minutes: 60
 
 # Memcached config
-# memcached_hosts: host1:11211, host2:11211
+memcached_hosts: localhost:11211

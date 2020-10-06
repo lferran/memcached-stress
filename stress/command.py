@@ -33,21 +33,15 @@ class StressTestCommand(Command):
         return parser
 
     def run(self, arguments, settings, app):
-
         rate = arguments.rate
         duration = arguments.time
-        start = datetime.utcnow()
-
         logger.info(
-            f"Starting at {start} with a {rate} ops/second rate for {duration} minutes"
+            f"Starting experiment: up to {rate} ops/second rate for {duration} minutes"
         )
-
         if arguments.debug:
             logger._logger.setLevel(logging.DEBUG)
 
         memcached = MemcachedStress(request_rate=rate, duration=duration)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(memcached.run())
-
-        end = datetime.utcnow()
-        logger.info(f"Finished at {end}")
+        logger.info(f"Finished experiment")
