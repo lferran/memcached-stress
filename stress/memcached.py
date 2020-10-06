@@ -1,6 +1,5 @@
 import asyncio
 import random
-import string
 import time
 
 from guillotina import glogging
@@ -87,7 +86,7 @@ class MemcachedStress:
             reqs_sec = self.request_rate * traffic_ratio
             try:
                 logger.info(
-                    f"Starting phase {i} at {percent}% of traffic ({reqs_sec} reqs/sec) during {minutes:.1f} minutes"
+                    f"Starting phase {i} at {percent}% of traffic ({reqs_sec} reqs/sec) during {minutes:.1f} minutes"  # noqa
                 )
                 await asyncio.wait_for(
                     self.generate_traffic(traffic_ratio), timeout=minutes * 60
@@ -105,4 +104,4 @@ class MemcachedStress:
         except KeyboardInterrupt:
             logger.info("Halting experiment")
         await self.finalize()
-        logger.info(f"Finished experiment")
+        logger.info("Finished experiment")

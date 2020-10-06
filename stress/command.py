@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from datetime import datetime
 
 import prometheus_client
 from aiohttp import web
@@ -43,7 +42,9 @@ class StressTestCommand(Command):
         if arguments.debug:
             logger._logger.setLevel(logging.DEBUG)
 
-        memcached = MemcachedStress(request_rate=rate, duration=duration)
+        memcached = MemcachedStress(
+            request_rate=arguments.rate, duration=arguments.time
+        )
         loop = self.get_loop()
         asyncio.ensure_future(memcached.run(), loop=loop)
 
