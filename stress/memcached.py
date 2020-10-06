@@ -9,38 +9,62 @@ logger = glogging.getLogger("stress")
 
 
 class MemcachedStress:
-    def __init__(self, request_rate=20, duration=60):
+    def __init__(
+        self,
+        request_rate=20,
+        duration=60,
+        object_size_mean=7750,
+        object_size_variance=2000,
+        n_keys=10_000,
+        get_prob=0.4,
+        set_prob=0.3,
+        delete_prob=0.2,
+    ):
         self.request_rate = request_rate
         self.duration = duration  # minutes
         self.driver = None
-        self._keys = self._setup_keys()
+        self._keys = self._setup_keys(n_keys)
+        self.object_size_mean = object_size_mean
+        self.object_size_variance = object_size_variance
+        self.op_probs = {"get": get_prob, "set": set_prob, "delete": delete_prob}
 
-    def _setup_keys(self):
+    def _setup_keys(self, n_keys=10_000):
         """
         We want a deterministic set of keys!
         """
-        return [f"stresstest-{i}" for i in range(10_000)]
+        return [f"stresstest-{i}" for i in range(n_keys)]
 
     def get_value_size(self):
+        """Size of objects in cache follow a gaussian distribution.
+
         """
-        in bytes
-        """
-        return max(1, int(random.gauss(7750, 2000)))
+        return max(
+            1, int(random.gauss(self.object_size_mean, self.object_size_variance))
+        )
 
     def get_op(self):
-        op_probs = {"get": 0.5, "set": 0.3, "delete": 0.2}
         return random.choices(
             population=["get", "set", "delete"],
-            weights=[op_probs["get"], op_probs["set"], op_probs["delete"]],
+            weights=[
+                self.op_probs["get"],
+                self.op_probs["set"],
+                self.op_probs["delete"],
+            ],
         )[0]
 
     def get_key(self):
+        """Choose one key at random with uniform distribution.
+
+        """
         return random.choice(self._keys)
 
     def get_value(self):
         return ("D" * self.get_value_size()).encode()
 
     def iter_traffic_stages(self):
+        """
+        Performs stages of % of the full traffic
+        """
         for duration_ratio, traffic_ratio in [
             (0.083, 0.25),
             (0.167, 0.5),
@@ -49,7 +73,15 @@ class MemcachedStress:
         ]:
             yield duration_ratio, traffic_ratio
 
-    async def memcached_op(self):
+    async def random_memcached_op(self):
+        """
+        Executes a random memcached operation
+        """
+        # Sleep random amount of time to avoid having too much
+        # contention when getting a free connection
+        sleep_time = random.randint(0, 1000) / 1000
+        await asyncio.sleep(sleep_time)
+
         op = self.get_op()
         key = self.get_key()
         args = []
@@ -60,7 +92,7 @@ class MemcachedStress:
         await func(key, *args)
 
     async def execute_n_ops(self, n):
-        ops = [self.memcached_op() for i in range(n)]
+        ops = [self.random_memcached_op() for i in range(n)]
         await asyncio.gather(*ops)
 
     async def generate_traffic(self, ratio=1):
