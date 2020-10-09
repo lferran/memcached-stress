@@ -48,12 +48,13 @@ class StressTestCommand(Command):
         return parser
 
     def run(self, arguments, settings, app):
-        if arguments.debug:
+        args = arguments
+        if args.debug:
             logger._logger.setLevel(logging.DEBUG)
 
         memcached = MemcachedStress(
-            request_rate=arguments.rate,
-            duration=arguments.time,
+            request_rate=args.rate,
+            duration=args.time,
             object_size_mean=args.size_mean,
             object_size_variance=args.size_variance,
         )
