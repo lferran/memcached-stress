@@ -89,7 +89,10 @@ class MemcachedStress:
             value = self.get_value()
             args.append(value)
         func = getattr(self.driver, op)
-        await func(key, *args)
+        try:
+            await func(key, *args)
+        except Exception:
+            logger.error(f"OP failed {op} {key} {args}", exc_info=True)
 
     async def execute_n_ops(self, n):
         ops = [self.random_memcached_op() for i in range(n)]
