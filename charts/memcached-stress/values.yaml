@@ -18,6 +18,8 @@ resources:
 replicas: 50
 request_rate: 80
 experiment_minutes: 60
+object_size_mean: 7750
+object_size_variance: 2000
 
 # Memcached config ############
 memcached_hosts: memcached-test-a01.intra.onna.internal:11211, memcached-test-b01.intra.onna.internal:11211

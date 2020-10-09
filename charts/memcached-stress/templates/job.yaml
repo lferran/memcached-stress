@@ -23,7 +23,7 @@ spec:
         - containerPort: 8080
           name: metrics-stress
           protocol: TCP
-        command: ["guillotina", "-c", "config.json", "stress", "--debug", "--rate", "{{ .Values.request_rate }}", "--time", "{{ .Values.experiment_minutes}}"]
+        command: ["guillotina", "-c", "config.json", "stress", "--debug", "--rate", "{{ .Values.request_rate }}", "--time", "{{ .Values.experiment_minutes}}", "--size-mean", "{{ .Values.object_size_mean }}", "--size-variance", "{{ .Values.object_size_variance }}"]
         envFrom:
         - configMapRef:
             name: {{ .Values.name }}-config

@@ -24,8 +24,8 @@ class MemcachedStress:
         self.duration = duration  # minutes
         self.driver = None
         self._keys = self._setup_keys(n_keys)
-        self.object_size_mean = object_size_mean
-        self.object_size_variance = object_size_variance
+        self.object_size_mean = int(object_size_mean)
+        self.object_size_variance = int(object_size_variance)
         self.op_probs = {"get": get_prob, "set": set_prob, "delete": delete_prob}
 
     def _setup_keys(self, n_keys=10_000):
@@ -67,9 +67,10 @@ class MemcachedStress:
         """
         for duration_ratio, traffic_ratio in [
             (0.083, 0.25),
-            (0.167, 0.5),
-            (0.33, 0.75),
+            (0.083, 0.5),
+            (0.083, 0.75),
             (0.4167, 1),
+            (1, 1),
         ]:
             yield duration_ratio, traffic_ratio
 

@@ -36,6 +36,15 @@ class StressTestCommand(Command):
             type=int,
             default=60,
         )
+        parser.add_argument(
+            "--size-mean", help="Object size norm distr mean", type=int, default=7750
+        )
+        parser.add_argument(
+            "--size-variance",
+            help="Object size norm distr variance",
+            type=int,
+            default=2000,
+        )
         return parser
 
     def run(self, arguments, settings, app):
@@ -43,7 +52,10 @@ class StressTestCommand(Command):
             logger._logger.setLevel(logging.DEBUG)
 
         memcached = MemcachedStress(
-            request_rate=arguments.rate, duration=arguments.time
+            request_rate=arguments.rate,
+            duration=arguments.time,
+            object_size_mean=args.size_mean,
+            object_size_variance=args.size_variance,
         )
         loop = self.get_loop()
         asyncio.ensure_future(memcached.run(), loop=loop)
