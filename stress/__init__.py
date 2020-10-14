@@ -22,7 +22,7 @@ app_settings = {
     "commands": {"stress": "stress.command.StressTestCommand"},
     "memcached": {
         "hosts": get_hosts(),
-        "timeout": 120,
+        "timeout": 1,
         "max_connections": 4,
         "purge_unused_connections_after": None,
         "purge_unhealthy_nodes": True,

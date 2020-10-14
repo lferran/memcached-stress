@@ -66,11 +66,12 @@ class MemcachedStress:
         Performs stages of % of the full traffic
         """
         for duration_ratio, traffic_ratio in [
-            (0.083, 0.25),
-            (0.083, 0.5),
-            (0.083, 0.75),
-            (0.4167, 1),
-            (1, 1),
+            # (0.083, 0.25),
+            # (0.083, 0.5),
+            # (0.083, 0.75),
+            # (0.4167, 1),
+            # (1, 1),
+            (2, 1)  # 2h full traffic
         ]:
             yield duration_ratio, traffic_ratio
 
@@ -93,7 +94,7 @@ class MemcachedStress:
         try:
             await func(key, *args)
         except Exception:
-            logger.error(f"OP failed {op} {key} {args}", exc_info=True)
+            logger.error(f"OP failed {op} {key}", exc_info=True)
 
     async def execute_n_ops(self, n):
         ops = [self.random_memcached_op() for i in range(n)]
